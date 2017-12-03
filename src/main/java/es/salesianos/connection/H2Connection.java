@@ -62,6 +62,50 @@ public class H2Connection implements ConnectionManager {
 		return listUsers;
 	}
 	
+	public User selectByNombre(String nombre) {
+		User user = new User();
+		Connection conn = open(jdbcUrl);
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+
+		try {
+			preparedStatement = conn.prepareStatement("SELECT * FROM User WHERE nombre = ?");
+			preparedStatement.setString(1, nombre);
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				user.setNombre(resultSet.getString("nombre"));
+				user.setApellido(resultSet.getString("apellido"));
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close(resultSet);
+			close(preparedStatement);
+			close(conn);
+		}
+
+		return user;
+	}
+	
+	public void delete(String nombre) {
+		Connection conn = open(jdbcUrl);
+		PreparedStatement preparedStatement = null;
+		try {
+			preparedStatement = conn.prepareStatement("DELETE FROM person WHERE nombre = ?");
+			preparedStatement.setString(1, nombre);
+			preparedStatement.executeUpdate();
+
+			System.out.println("DELETE FROM person WHERE nombre = ?");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close(preparedStatement);
+			close(conn);
+		}
+	}
+	
 	public Connection open(String jdbcUrl) {
 		Connection conn = null;
 		try {

@@ -18,4 +18,7 @@ public interface ConnectionManager {
 
 	public List<User> searchAll();
 
+
+	User selectByNombre(String nombre);
+
 }
